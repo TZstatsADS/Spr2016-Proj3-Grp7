@@ -1,6 +1,9 @@
 
 
 ```{r}
+#source("http://bioconductor.org/biocLite.R")
+#biocLite()
+#biocLite("EBImage")
 library(data.table)
 library(lattice)
 library(ggplot2)
@@ -9,7 +12,7 @@ library(Momocs)
 library(EBImage)
 
 #import images
-dir_images <- "~/Desktop/project3/images" #;dir_images
+dir_images <- "~/Desktop/images" #;dir_images
 dir_names <- list.files(dir_images)#;dir_names
 breed_name <- rep(NA, length(dir_names))
 
@@ -69,7 +72,8 @@ feature <- function(img_dir,img_name,data_name = NULL){
   return(dat)
 }
 
-data <- feature(img_test_dir, testname)
+traindata <- feature(img_train_dir, trainname)
+testdata <- feature(img_test_dir, testname)
 
 ```
 
