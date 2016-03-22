@@ -42,7 +42,7 @@ testlabel <- as.factor(y_cat[-trainindex])
 ```
 
 ```{r}
-img_test_dir <- img_train_dir <- "~/Desktop/project3/images/"
+img_test_dir <- img_train_dir <- "~/Desktop/images/"
 #img_name <- testname
 #img_dir <- "~/Desktop/project3/images/"
 
@@ -53,12 +53,20 @@ feature <- function(img_dir,img_name,data_name = NULL){
   dat <- list()
   for(i in 1:n){
     if(trunc(i/5)*5==i){print(i)}
+    
     #read images
-    #mat <- readImage(paste0(img_dir,img_name)[i]) #;display(mat)
-    mat_size <- resize(readImage(paste0(img_dir,img_name)[i]),128,128)
-    img <- channel(mat_size, mode="gray") #;display(img)
-    final_img <- thresh(img, w = 50, h = 50, offset = 0.05) #;display(final_img)
-    oc <- ocontour(bwlabel(final_img)) #;oc
+    img <- readImage(paste0(img_dir,img_name)[i]) #;display(mat)
+    img <- channel(img, mode="gray") #;display(img)
+    
+    #High-pass Laplacian filtering
+    f_high <- matrix(1, nc=3, nr=3)
+    f_high[2,2] <- -8
+    img <- filter2(img, f_high)
+    
+    #Adaptive thresholding
+    img <- thresh(img, w = 50, h = 50, offset = 0.05) #;display(final_img)
+    img <- resize(img, 128,128)
+    oc <- ocontour(bwlabel(img)) #;oc
     max <- c()
     for(j in 1:length(oc)){
      max[j] <- nrow(oc[[j]])
@@ -72,8 +80,11 @@ feature <- function(img_dir,img_name,data_name = NULL){
   return(dat)
 }
 
-traindata <- feature(img_train_dir, trainname)
+#traindata <- feature(img_train_dir, trainname)
 testdata <- feature(img_test_dir, testname)
+efourier(testdata[[1]], nb.h = 10)
+
+
 
 ```
 
